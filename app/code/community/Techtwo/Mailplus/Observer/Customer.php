@@ -182,7 +182,7 @@ class Techtwo_Mailplus_Observer_Customer
 		}
 		catch (Exception $e)
 		{
-			throw $e;
+			Mage::logException($e);
 		}
 
 		return $this;
@@ -320,7 +320,6 @@ class Techtwo_Mailplus_Observer_Customer
 		catch (Exception $e)
 		{
 			Mage::logException($e);
-			throw $e;
 		}
 
 		return $this;
@@ -335,7 +334,12 @@ class Techtwo_Mailplus_Observer_Customer
 		$user = Mage::getModel('mailplus/user');
 		$user = $user->loadByCustomer($customer);
 		if ($user && $user->getId()) {
-			$this->deleteMailplusUser($user->getStoreId(), $user->getId());
+			try {
+                $this->deleteMailplusUser($user->getStoreId(), $user->getId());
+            }
+            catch (Exception $e) {
+			    Mage::logException($e);
+            }
 		}
 		return $this;
 	}
@@ -346,7 +350,12 @@ class Techtwo_Mailplus_Observer_Customer
 		$subscriber = $observer->getEvent()->getData('subscriber');
 		$userModel = Mage::getModel('mailplus/user')->load( $subscriber->getData('subscriber_email'), 'email' );
 		if ( $userModel && $userModel->getId() )
-			$this->deleteMailplusUser($userModel->getStoreId(), $userModel->getId());
+			try {
+                $this->deleteMailplusUser($userModel->getStoreId(), $userModel->getId());
+            }
+            catch (Exception $e) {
+                Mage::logException($e);
+            }
 		return $this;
 	}
 

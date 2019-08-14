@@ -343,7 +343,8 @@ class Techtwo_Mailplus_Model_User extends Mage_Core_Model_Abstract
 		$this->getPermissions();
 
 		if (is_null($this->_permissions)) {
-			throw new Exception("Error while getting current permissions");
+			Mage::log("Error while getting current permissions, so not setting new permissions");
+            return;
 		}
 		
 		if ( FALSE !== $this->_permissions )
@@ -359,7 +360,7 @@ class Techtwo_Mailplus_Model_User extends Mage_Core_Model_Abstract
 			}
 			else
 			{
-				throw new Exception("Invalid permission $permission, no such permission for contact found");
+                Mage::log("Invalid permission $permission, no such permission for contact found");
 			}
 
 		}

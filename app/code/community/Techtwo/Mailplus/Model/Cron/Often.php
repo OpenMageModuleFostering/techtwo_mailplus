@@ -271,7 +271,8 @@ class Techtwo_Mailplus_Model_Cron_Often
     public function syncSyncItem($item) {
     	/** @var $product Techtwo_Mailplus_Helper_Data */
     	$mailplusHelper = Mage::helper('mailplus');
-    	$rest = Mage::helper('mailplus/rest');
+    	/** @var $rest Techtwo_Mailplus_Helper_Rest */
+        $rest = Mage::helper('mailplus/rest');
     	
     	switch ($item->getSynctype()) {
     		case Techtwo_Mailplus_Model_Syncqueue::TYPE_CUSTOMER:
