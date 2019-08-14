@@ -1,0 +1,2 @@
+<?php
+die("The Techtwo COWW connector cannot be upgraded to the MailPlus Connector. Please de-install the COWW connector, remove all mailplus tables from the database and do a clean install of the MailPlus Connector");

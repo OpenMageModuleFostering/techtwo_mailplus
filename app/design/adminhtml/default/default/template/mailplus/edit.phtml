@@ -1,0 +1,117 @@
+<?php
+/*
+ * Copyright 2014 MailPlus
+*
+* Licensed under the Apache License, Version 2.0 (the "License"); you may not
+* use this file except in compliance with the License. You may obtain a copy
+* of the License at
+*
+* http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+* WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+* License for the specific language governing permissions and limitations
+* under the License.
+*/
+if (!Mage::helper('mailplus')->isEnabled())
+{
+	?>
+	<div class="error"><h2>Module is not enabled</h2></div>
+	<p>
+		MailPlus is installed but not enabled. You must enable it to correctly syncronize and use MailPlus services.<br />
+		The module must be activated and enabled.
+	</p>
+<?php
+	return;
+}
+
+
+
+
+
+// echo Mage::getStoreConfig('MailPlus/general/mailplus_id');
+
+
+echo 'empty';
+return;
+?>
+	<div id="page:main-container">
+		<div id="messages"></div>
+		<div class="content-header">
+			<table cellspacing="0">
+        <tbody><tr>
+            <td style="width:50%;"><h3 class="icon-head head-adminhtml-mobile">Edit user</h3></td>
+            <td class="form-buttons"><button style="" onclick="setLocation('http://magento.local/index.php/admin/mobile/new/key/53dcbae5fa5a32b19f77601b9ac30bbe/')" class="scalable add" type="button" id="id_fc34dcaa44833e9c687985f298822182"><span>Add App</span></button></td>
+					</tr>
+				</tbody></table>
+		</div>
+		<div>
+			
+			<div id="mobile_apps_grid">
+        <table cellspacing="0" class="actions">
+					<tbody><tr>
+							<td class="pager">
+								Page
+								<img class="arrow" alt="Go to Previous page" src="http://magento.local/skin/adminhtml/default/default/images/pager_arrow_left_off.gif">
+									
+								<input type="text" onkeypress="mobile_apps_gridJsObject.inputPage(event, '1')" class="input-text page" value="1" name="page">
+									
+								<img class="arrow" alt="Go to Previous page" src="http://magento.local/skin/adminhtml/default/default/images/pager_arrow_right_off.gif">
+									
+								of 1 pages            <span class="separator">|</span>
+								View            <select onchange="mobile_apps_gridJsObject.loadByElement(this)" name="limit">
+									<option selected="selected" value="20">20</option>
+									<option value="30">30</option>
+									<option value="50">50</option>
+									<option value="100">100</option>
+									<option value="200">200</option>
+								</select>
+								per page<span class="separator">|</span>
+								Total 0 records found            <span class="no-display" id="mobile_apps_grid-total-count">0</span>
+							</td>
+							<td class="filter-actions a-right">
+								<button style="" onclick="mobile_apps_gridJsObject.resetFilter()" class="scalable " type="button" id="id_42b86e575de572cdbc965e3de5301646"><span>Reset Filter</span></button><button style="" onclick="mobile_apps_gridJsObject.doFilter()" class="scalable task" type="button" id="id_961935cee023689cbeb9f54014d04c79"><span>Search</span></button>        </td>
+						</tr>
+					</tbody></table>
+				<div class="grid">
+					<div class="hor-scroll">
+						<table cellspacing="0" id="mobile_apps_grid_table" class="data">
+							<colgroup><col>
+                <col width="200">
+                <col>
+                <col>
+							</colgroup><thead>
+								<tr class="headings">
+									<th><span class="nobr"><a class="not-sort" title="asc" name="name" href="#"><span class="sort-title">App Name</span></a></span></th>
+									<th><span class="nobr"><a class="not-sort" title="asc" name="code" href="#"><span class="sort-title">App Code</span></a></span></th>
+									<th><span class="nobr"><a class="not-sort" title="asc" name="type" href="#"><span class="sort-title">Device</span></a></span></th>
+									<th class=" last"><span class="nobr"><a class="not-sort" title="asc" name="status" href="#"><span class="sort-title">Status</span></a></span></th>
+								</tr>
+								<tr class="filter">
+									<th><div class="field-100"><input type="text" class="input-text no-changes" value="" id="filter_name" name="name"></div></th>
+							<th><div class="field-100"><input type="text" class="input-text no-changes" value="" id="filter_code" name="code"></div></th>
+							<th><select class="no-changes" id="filter_type" name="type"><option value=""></option><option value="ipad">iPad</option><option value="iphone">iPhone</option><option value="android">Android</option></select></th>
+							<th class=" last"><select class="no-changes" id="filter_status" name="status"><option value=""></option><option value="1">Submitted</option><option value="0">Not Submitted</option></select></th>
+							</tr>
+							</thead>
+								
+							<tbody id="">
+								<tr class="even">
+									<td colspan="4" class="empty-text a-center">No records found.</td>
+								</tr>
+							</tbody>
+								
+						</table>
+					</div>
+				</div>
+			</div>
+			<script type="text/javascript">
+				//&lt;![CDATA[
+				mobile_apps_gridJsObject = new varienGrid('mobile_apps_grid', 'http://magento.local/index.php/admin/mobile/index/key/966a6d38122a600c6981a377d23f2872/', 'page', 'sort', 'dir', 'filter');
+				mobile_apps_gridJsObject.useAjax = '';
+				mobile_apps_gridJsObject.rowClickCallback = openGridRow;
+				//]]&gt;
+			</script>
+		</div>
+	</div>

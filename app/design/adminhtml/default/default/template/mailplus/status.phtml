@@ -1,0 +1,100 @@
+<?php
+/*
+ * Copyright 2014 MailPlus
+*
+* Licensed under the Apache License, Version 2.0 (the "License"); you may not
+* use this file except in compliance with the License. You may obtain a copy
+* of the License at
+*
+* http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+* WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+* License for the specific language governing permissions and limitations
+* under the License.
+*/
+
+	$website = Mage::app()->getFrontController()->getRequest()->getParam('website');
+	if (!$website) {
+		$sites = Mage::app()->getWebsites();
+		$website = reset($sites);
+	} else {
+		$website = Mage::app()->getWebsite($website);
+	}
+
+	/* @var $rest Techtwo_Mailplus_Helper_Rest */
+	$rest = Mage::helper('mailplus/rest');
+	$mailplus = Mage::helper('mailplus');
+
+	$hasMailPlusConnection = false;
+	
+	$hasMailPlusConnection = (FALSE !== $rest->clearContactPropertiesCache($website->getId())->getContactProperties($website->getId()) );
+?>
+<script type="text/javascript">
+	function mailplus_start_synchronize() {
+		document.location.href='<?php echo Mage::helper('adminhtml')->getUrl('adminhtml/mailplus_adminhtml_status/synchronize', array( 'website' => $website->getCode())); ?>';
+	}
+</script>
+<div class="content-header">
+	<table cellspacing="0">
+		<tbody><tr>
+			<td style="width:50%;">
+				<h3 class="icon-head head-adminhtml-users">
+				<?php echo $mailplus->__('Connector state') ?>
+				(<?php echo $mailplus->__('version') ?> 
+				<?php echo Mage::getConfig()->getModuleConfig("Techtwo_Mailplus")->version . 
+					Mage::getConfig()->getModuleConfig("Techtwo_Mailplus")->subv; 
+				?>)
+				<?php echo $mailplus->__('for website') . " &quot" . $website->getName() . "&quot"?></h3>
+			</td>
+			<td class="form-buttons">
+				<button style="" onclick="mailplus_start_synchronize();" class="scalable add" type="button"><span>Volledig synchroniseren</span></button>
+			</td>
+		</tr>
+		</tbody>
+	</table>
+</div>
+<div class="content-body">
+	<ul class="messages">
+		<?php if ( $hasMailPlusConnection ) { ?>
+			<li class="success-msg">
+				<ul>
+					<li>
+						<span>The connection between Magento and MailPlus is OK</span>
+					</li>
+				</ul>
+			</li>
+			<?php 		
+		} else {
+			?>
+			<li class="error-msg">
+			<ul>
+			<li>
+			<strong>The connection between Magento and Mailplus <u>is not OK</u></strong><br />
+			<span>If the connection is not OK in the next hour, please contact the MailPlus helpdesk.</span>
+			</li>
+			</ul>
+			</li>
+		<?php  }
+			$queueCount = $mailplus->getRestqueueCount();
+			if ($queueCount) {
+			?>
+			<li class="error-msg">
+				<ul>
+					<li>
+						<p>
+							<?php echo $this->__( 'There are still %u MailPlus API calls queued', $queueCount); ?>
+						</p>
+						<p>
+							<?php echo $this->__( 'If this queue cannot be emptied, the connection between Magento and MailPlus is not OK.'); ?>
+						</p>
+					</li>
+				</ul>
+			</li>
+			<?php 
+		}
+		?>
+	</ul>	
+</div>
+

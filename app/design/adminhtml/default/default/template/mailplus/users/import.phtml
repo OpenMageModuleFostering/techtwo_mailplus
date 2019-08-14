@@ -1,0 +1,27 @@
+<?php Mage::app()->getLayout()->getMessagesBlock()->getGroupedHtml(); ?> 
+<h1><?php echo Mage::helper('mailplus')->__('Import users') ?></h1>
+<form enctype="multipart/form-data" action="<?php echo $this->getUrl('*/*/import')?>" method="post" />
+	<input type="hidden" name="form_key" value="<?php echo $this->getFormKey(); ?>" /> 
+	
+	<?php echo Mage::helper('mailplus')->__('Website') ?>
+	<select name="website_id">
+		<?php
+		$websites = Mage::app()->getWebsites();
+		foreach ( $websites as $website )
+			echo '<option value="'.$website->getId().'">'.$website->getName().'</option>';
+		?>
+	</select><br />
+	
+	<em><?php echo Mage::helper('mailplus')->__('Import csv file') ?></em>
+	<input type="hidden" name="MAX_FILE_SIZE" value="<?php echo $this->getMaxImportFilesize() ?>" />
+	<input type="file" name="ufile" /><br />
+	<br />
+	<input type="submit" class="form-button" value="<?php echo Mage::helper('mailplus')->__('Import')?>" />
+</form>
+
+<?php
+
+//$websites = Mage::app()->getWebsites();
+//print_r(reset($websites)->toArray());
+
+?>

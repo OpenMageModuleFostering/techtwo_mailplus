@@ -1,0 +1,30 @@
+<?php
+/*
+ * Copyright 2014 MailPlus
+*
+* Licensed under the Apache License, Version 2.0 (the "License"); you may not
+* use this file except in compliance with the License. You may obtain a copy
+* of the License at
+*
+* http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+* WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+* License for the specific language governing permissions and limitations
+* under the License.
+*/	
+
+	$websites=Mage::app()->getWebsites();
+	$baseUrl = $this->getUrl('*/*/*', array('_current' => true, $this->_storeVarName => null, 'website'=> null));
+	$current_website_code = Mage::app()->getFrontController()->getRequest()->getParam('website');
+?>
+<p class="switcher">
+	<label for="website_switcher"><?php echo $this->__('Select website') ?>:</label>
+	<select id="website_switcher" onchange="location.href=this.value">
+		<?php foreach ($websites as $website): ?>
+		<?php $_selected = $website->getCode() == $current_website_code? ' selected="selected"' : '' ?>
+		<option value="<?php echo $baseUrl . 'website/' . $website->getCode(); ?>"<?php echo $_selected ?>><?php echo $this->htmlEscape($website->getName()) ?></option>
+		<?php endforeach; ?>
+	</select>
+</p>

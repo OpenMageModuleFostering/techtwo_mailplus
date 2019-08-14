@@ -1,0 +1,60 @@
+<?php
+// Finds the base Mage_Adminhtml_Block_Widget_Grid
+// For maximum upgradability.. does not overwrite the grid table.
+
+$file = Mage::getDesign()->getTemplateFilename('widget/grid.phtml');
+$helper = Mage::helper('mailplus');
+/* @var $helper Techtwo_Model_Helper_Data */
+?>
+
+<div id="last_synchronized" style="margin: -1em 0 2em 0"><b><?php echo $helper->__('Last synchronized')?></b>:
+
+	<?php
+	$last_cron_file = Mage::getBaseDir('var').DS.'mailplus-last-cron.php';
+	$time = file_exists($last_cron_file)? include $last_cron_file:0;
+	if ( !$time )
+	{
+		echo 'never';
+	}
+	else
+	{
+		$diff = time() - $time;
+		if ( $diff > 86400 )
+		{
+			echo date('j F Y, H:i', $time);
+		}
+		else
+		{
+			$diff_r = 0;
+
+			if ($diff > 3600 )
+			{
+				$diff_r = floor($diff / 3600);
+				echo $diff_r.' '.$helper->__('hours');
+				$diff -= $diff_r * 3600;
+			}
+
+			if ( $diff > 60 )
+			{
+				if ( $diff_r )
+					echo ' '.$helper->__('and').' ';
+				$diff_r = floor($diff / 60);
+				echo $diff_r.' '.$helper->__('minutes');
+				$diff -= $diff_r * 60;
+			}
+
+			if ( $diff )
+			{
+				if ( $diff_r )
+					echo ' '.$helper->__('and').' ';
+				echo $diff.' '.$helper->__('seconds');
+			}
+			echo ' '.$helper->__('ago');
+		}
+	}
+
+
+	?>
+</div>
+
+<?php if ( $file ) require $file; ?>

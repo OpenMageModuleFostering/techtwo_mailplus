@@ -1,0 +1,64 @@
+<?php
+/*
+ * Copyright 2014 MailPlus
+*
+* Licensed under the Apache License, Version 2.0 (the "License"); you may not
+* use this file except in compliance with the License. You may obtain a copy
+* of the License at
+*
+* http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+* WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+* License for the specific language governing permissions and limitations
+* under the License.
+*/
+$locale = Mage::app()->getLocale()->getLocaleCode();
+
+// @var $resource Mage_Core_Model_Resource*/
+$prefix = (string) Mage::app()->getConfig()->getResourceConfig('db')->table_prefix;
+
+
+$readDb = Mage::getSingleton('core/resource')->getConnection('core_write');
+/* @var $readDb Varien_Db_Adapter_Pdo_Mysql */
+$resource = $readDb->fetchRow("SELECT * FROM {$prefix}core_resource WHERE `code` LIKE {$readDb->quote('mailplus_setup')}", array(), Zend_Db::FETCH_OBJ );
+
+
+switch ( $locale )
+{
+	case 'nl_NL':
+?>
+
+<h1>MailPlus - Help</h1>
+<p>
+	U bevind zich op de hulp pagina voor de koppeling van <a href="http://www.mailplus.nl/" target="_blank">MailPlus</a> en Magento.<br />
+	U gebruikt versie <?php echo Mage::getConfig()->getModuleConfig('Techtwo_Mailplus')->version . Mage::getConfig()->getModuleConfig('Techtwo_Mailplus')->subv; ?>.
+	<?php if ( $resource ) : ?>
+		U heeft deze module geinstalleerd met de versie: <?php echo $resource->version; ?> en uw data versie is <?php echo $resource->data_version; ?>
+	<?php else: ?>
+	Deze module is niet correct geinstalleerd.
+	<?php endif; ?>
+</p>
+
+<?php
+	break;
+
+	default:
+		?>
+
+<h1>MailPlus - Help</h1>
+<p>
+	You are now viewing the help page for <a href="http://www.mailplus.nl/" target="_blank">MailPlus</a> Magento Connection<br />
+	The version of this module is <?php echo Mage::getConfig()->getModuleConfig('Techtwo_Mailplus')->version . Mage::getConfig()->getModuleConfig('Techtwo_Mailplus')->subv;; ?> 
+	<?php if ( $resource ) : ?>
+		The version module installed is: : <?php echo $resource->version; ?> and your data version is <?php echo $resource->data_version; ?>.
+	<?php else: ?>
+	You have not installed this module correctly.
+	<?php endif; ?>
+</p>
+
+	<?php
+}
+
+?>

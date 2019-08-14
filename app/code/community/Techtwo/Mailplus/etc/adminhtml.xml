@@ -1,0 +1,77 @@
+<config>
+    <menu>
+        <mailplus translate="title" module="mailplus">
+		<title>MailPlus</title>
+				<sort_order>50</sort_order>
+				<!--<depends><module>Techtwo_Mailplus</module></depends> -->
+				<children>
+					<status translate="title" module="mailplus">
+						<title>Status connector</title>
+						<action>adminhtml/mailplus_adminhtml_status/index</action>
+					</status>
+					<bounces translate="title" module="mailplus">
+						<title>Bounces</title>
+						<action>adminhtml/mailplus_adminhtml_bounces/index</action>
+					</bounces>
+					<restqueue translate="title" module="mailplus">
+						<title>API Queue</title>
+						<action>adminhtml/mailplus_adminhtml_restqueue/index</action>
+					</restqueue>
+					<mapping translate="title" module="mailplus">
+						<title>Mapping</title>
+						<action>adminhtml/mailplus_adminhtml_mapping/index</action>
+					</mapping>
+					<help translate="title" module="mailplus">
+						<title>Help</title>
+						<action>adminhtml/mailplus_adminhtml_help/index</action>
+					</help>
+				</children>
+		
+		</mailplus>
+    </menu>
+    <acl>
+			<resources>
+				<all>
+					<title>Allow everything</title>
+				</all>
+				<admin>
+					<children>
+						<mailplus translate="title" module="mailplus">
+							<title>MailPlus</title>
+							<sort_order>50</sort_order>
+							<children>
+								<status translate="title">
+									<title>Status connector</title>
+								</status>
+								<users translate="title">
+									<title>Contacts</title>
+								</users>
+								<bounces translate="title">
+									<title>Bounces</title>
+								</bounces>
+								<restqueue translate="title">
+									<title>API Queue</title>
+								</restqueue>
+								<mapping translate="title">
+									<title>Mapping</title>
+								</mapping>
+								<help translate="title">
+									<title>Help</title>
+								</help>
+							</children>
+						</mailplus>
+
+					</children>
+				</admin>
+			</resources>
+		</acl>
+		<translate>
+			<modules>
+				<Techtwo_Mailplus>
+					<files>
+						<default>Techtwo_Mailplus.csv</default>
+					</files>
+				</Techtwo_Mailplus>
+			</modules>
+		</translate>
+</config>    

@@ -1,0 +1,2 @@
+<?php
+die("The current MailPlus Connector version cannot be upgraded. Please de-install the MailPlus Connector, remove all mailplus tables from the database and do a clean install of the current MailPlus Connector");

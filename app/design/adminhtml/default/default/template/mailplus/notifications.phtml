@@ -1,0 +1,55 @@
+<?php
+/*
+ * Copyright 2014 MailPlus
+*
+* Licensed under the Apache License, Version 2.0 (the "License"); you may not
+* use this file except in compliance with the License. You may obtain a copy
+* of the License at
+*
+* http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+* WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+* License for the specific language governing permissions and limitations
+* under the License.
+*/
+// --- Utilize the cache whenever available ---
+$cache = Mage::getSingleton('core/cache');
+/* @var $cache Mage_Core_Model_Cache */
+
+$bounce_errors = $cache->load('mailplus.notifications.bounce_errors');
+if ( false === $bounce_errors )
+{
+	$readDb = Mage::getSingleton('core/resource')->getConnection('core_read');
+	/* @var $readDb Zend_Db_Adapter_Abstract */
+	
+	$bounce = Mage::getModel('mailplus/bounce');
+	$bounce_errors = $readDb->fetchOne($sql = '
+		SELECT COUNT('. $readDb->quoteIdentifier($bounce->getResource()->getIdFieldName()) .')
+		FROM ' . $readDb->quoteIdentifier( $bounce->getResource()->getMainTable() ).'
+		WHERE '. $readDb->quoteIdentifier('last_bounce_date') .' > '.$readDb->quote(date('Y-m-d H:i:s', strtotime('-2 weeks'))).' ;'
+	);
+	
+	if ( false !== $bounce_errors )
+		$bounce_errors = (int) $bounce_errors;
+	
+	$cache->save($bounce_errors, 'mailplus.notifications.bounce_errors', /*$tags*/array(), /*$lifeTime*/10);
+}
+
+////////////////////////////////////////////////
+
+
+if ( !$bounce_errors )
+	return;
+
+
+
+?>
+
+<?php if ( $bounce_errors ) : ?>
+<div class="notification-global">
+	<strong class="label"><?php echo Mage::helper('mailplus')->__('MailPlus Bounce reports') ?></strong>
+	<?php echo Mage::helper('mailplus')->__('Found %u <a href="%s">MailPlus bounces</a> in the last 2 weeks', $bounce_errors, $this->getUrl('adminhtml/mailplus_adminhtml_bounces') );?>
+</div>
+<?php endif; ?>
