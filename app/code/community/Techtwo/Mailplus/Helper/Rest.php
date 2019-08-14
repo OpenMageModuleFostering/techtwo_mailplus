@@ -205,6 +205,9 @@ class Techtwo_Mailplus_Helper_Rest extends Mage_Core_Helper_Abstract
 	 */
 	public function triggerCampaign( $campaign_constant, $externalId, array $extraData=array() )
 	{
+		/* @var $configHelper Techtwo_Mailplus_Helper_Config */
+		$configHelper = Mage::helper('mailplus/config');
+		
 		$this->_trigger_campaign_state = NULL;
 
 		if ( !$this->_validateConstant('CAMPAIGN_', $campaign_constant, $constant_name) )
@@ -222,6 +225,10 @@ class Techtwo_Mailplus_Helper_Rest extends Mage_Core_Helper_Abstract
 
 		$storeId = $user->getStoreId();
 
+		if (!$configHelper->contactSyncAllowedForStore($storeId)) {
+			return TRUE;
+		}
+		
 		$config_path = 'mailplus/campaign/'.strtolower(substr($constant_name, strlen('CAMPAIGN_')));
 		$campaign_code = Mage::getStoreConfig($config_path, $storeId);
 		if (!$campaign_code)
@@ -988,6 +995,13 @@ class Techtwo_Mailplus_Helper_Rest extends Mage_Core_Helper_Abstract
 	 */
 	public function updateContact( $storeId, $contact_data, array $options=array() )
 	{
+		/* @var $configHelper Techtwo_Mailplus_Helper_Config */
+		$configHelper = Mage::helper('mailplus/config');
+		
+		if (!$configHelper->syncActiveForStore($storeId) || !$configHelper->contactSyncAllowedForStore($storeId)) {
+			return TRUE;
+		}
+			
 		$options = array_merge( array(
 			'purge' => FALSE,
 		), $options);
@@ -1036,9 +1050,9 @@ class Techtwo_Mailplus_Helper_Rest extends Mage_Core_Helper_Abstract
 		/* @var $configHelper Techtwo_Mailplus_Helper_Config */
 		$configHelper = Mage::helper('mailplus/config');
 	
-		if ($storeId != 0 && !$configHelper->syncActiveForStore($storeId)) {
+		if ($storeId != 0 && (!$configHelper->syncActiveForStore($storeId) || !$configHelper->contactSyncAllowedForStore($storeId))) {
 			return $this;
-		} else if (!$configHelper->syncActiveForSite($websiteId)) {
+		} else if (!$configHelper->syncActiveForSite($websiteId) || !$configHelper->contactSyncAllowedForSite($websiteId)) {
 			return $this;
 		}
 
@@ -1251,13 +1265,6 @@ class Techtwo_Mailplus_Helper_Rest extends Mage_Core_Helper_Abstract
 			if (!$user->getId()) {
 				$customer = Mage::getModel('customer/customer')->load($order->getCustomerId());
 				$user = $dataHelper->createUserFromCustomer($customer);
-				try {
-					$user->save();
-				}
-				catch( Exception $e ) {
-					Mage::logException($e);
-					return null;
-				}
 			}
 		} else if ($order->getCustomerGroupId() == 0) {
 			// Order done by guest account. Check if e-mail exists and if not, create user.
@@ -1284,14 +1291,6 @@ class Techtwo_Mailplus_Helper_Rest extends Mage_Core_Helper_Abstract
 				$user->setFirstname($firstname);
 				$user->setLastname($lastname);
 				$user->setStoreId( $order->getStoreId());
-				
-				try {
-					$user->save();
-				}
-				catch( Exception $e ) {
-					Mage::logException($e);
-					return null;
-				}
 			}				
 		}
 		
@@ -1310,6 +1309,13 @@ class Techtwo_Mailplus_Helper_Rest extends Mage_Core_Helper_Abstract
 	 */
 	public function saveOrder($order, $checkSyncqueue) {
 		$dataHelper = Mage::helper('mailplus');
+		
+		/* @var $configHelper Techtwo_Mailplus_Helper_Config */
+		$configHelper = Mage::helper('mailplus/config');
+		
+		if (!$configHelper->contactSyncAllowedForStore($order->getStoreId())) {
+			return;
+		}
 		
 		$client = $this->getClientByStore($order->getStoreId());
 		if ($client == NULL) {
@@ -1336,6 +1342,18 @@ class Techtwo_Mailplus_Helper_Rest extends Mage_Core_Helper_Abstract
 		$user = $this->getUserFromOrder($order);
 		if ($user === NULL) {
 			return;
+		}
+		
+		// Save if its a new user
+		if (!$user->getId()) {
+			try {
+				$user->save();
+			}
+			catch( Exception $e ) {
+				Mage::logException($e);
+				return null;
+		
+			}
 		}
 		
 		$orderData['externalContactId'] = $user->getId();

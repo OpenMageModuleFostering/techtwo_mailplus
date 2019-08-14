@@ -63,7 +63,7 @@ class Techtwo_Mailplus_Mailplus_Adminhtml_StatusController extends Mage_Adminhtm
 		$storeViewsToSync = array();
 		
 		$website = Mage::app()->getWebsite($websiteId);
-		if ($configHelper->contactSyncAllowed($websiteId)) {
+		if ($configHelper->contactSyncAllowedForSite($websiteId)) {
 			foreach($website->getGroups() as $group) {
 				$stores = $group->getStores();
 				
@@ -96,7 +96,7 @@ class Techtwo_Mailplus_Mailplus_Adminhtml_StatusController extends Mage_Adminhtm
 		$configHelper = Mage::helper('mailplus/config');
 				
 		if (!$configHelper->syncActiveForSite($websiteId) ||
-					!$configHelper->contactSyncAllowed($websiteId) ) {
+					!$configHelper->contactSyncAllowedForSite($websiteId) ) {
 			return;
 		}
 
@@ -144,7 +144,7 @@ class Techtwo_Mailplus_Mailplus_Adminhtml_StatusController extends Mage_Adminhtm
 	protected function _fillSubscriberSyncCache($websiteId ) {
 		/* @var $configHelper Techtwo_Mailplus_Helper_Config */
 		$configHelper = Mage::helper('mailplus/config');
-		if (!$configHelper->contactSyncAllowed($websiteId) ) {
+		if (!$configHelper->contactSyncAllowedForSite($websiteId) ) {
 			return;
 		}
 		

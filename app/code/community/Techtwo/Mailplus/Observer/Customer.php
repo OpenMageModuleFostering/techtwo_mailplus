@@ -485,9 +485,16 @@ class Techtwo_Mailplus_Observer_Customer
 		$dataHelper = Mage::helper('mailplus');
 		/* @var $rest Techtwo_Mailplus_Helper_Rest */
 		$rest = Mage::helper('mailplus/rest');
+		/* @var $configHelper Techtwo_Mailplus_Helper_Config */
+		$configHelper = Mage::helper('mailplus/config');
 
 		/* @var $order Mage_Sales_Model_Order */
 		$order = $observer->getOrder();
+		
+		if (!$configHelper->contactSyncAllowedForStore($order->getStoreId())) {
+			return;
+		}
+		
 		$originalState = $order->getOrigData('state');
 
 		if ( $order->getState() !== $originalState) {
@@ -499,9 +506,9 @@ class Techtwo_Mailplus_Observer_Customer
 				// On order change to 'complete' which happens on button 'ship'
 				/* @var $user Techtwo_Mailplus_Model_User */
 				$user = $rest->getUserFromOrder($order);
-
-				if ($user && $user->getId()) {
+				if ($user) {
 					try {
+						$user->save();
 						$rest->saveOrder($order, TRUE);
 						$this->triggerReviewCampaign($user, $order);
 					}

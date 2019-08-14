@@ -269,6 +269,7 @@ class Techtwo_Mailplus_Model_Cron_Often
      * @param Techtwo_Mailplus_Model_Syncqueue $item
      */
     public function syncSyncItem($item) {
+    	/** @var $product Techtwo_Mailplus_Helper_Data */
     	$mailplusHelper = Mage::helper('mailplus');
     	$rest = Mage::helper('mailplus/rest');
     	
@@ -288,12 +289,7 @@ class Techtwo_Mailplus_Model_Cron_Often
 	    				$userModel->setData('firstname', $customer->getData('firstname'));
 		    			$userModel->setData('lastname', $customer->getData('lastname'));
 		    			$userModel->setData('email', $customer->getData('email'));
-		    			
-		    			$subscriber = Mage::getModel('newsletter/subscriber')->loadByCustomer($customer);
-		    			// TODO: Add this to Mailplus_User->loadByCustomer() and reset permissionsChanged to false after load is complete 
-		    			if ($subscriber && $subscriber->getStatus() == Mage_Newsletter_Model_Subscriber::STATUS_SUBSCRIBED) {
-		    				$userModel->setPermission( Techtwo_Mailplus_Helper_Rest::PERMISSION_BIT_NEWSLETTER, TRUE );
-		    			}
+		    			// Do not set the permissions when the contact is already synced to MailPlus
 	    			}
 	    			$userModel->save(); // also triggers the rest call to save the customer to MailPlus
 	    		}

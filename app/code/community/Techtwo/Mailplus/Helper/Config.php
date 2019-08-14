@@ -178,9 +178,13 @@ class Techtwo_Mailplus_Helper_Config extends Mage_Core_Helper_Abstract {
 		return (Mage::getStoreConfig('mailplus/general/active', $storeId) == 1);
 	}
 
-	public function contactSyncAllowed($siteId) {
+	public function contactSyncAllowedForSite($siteId) {
 		$site = Mage::app()->getWebsite($siteId);
 		return ($site->getConfig('mailplus/general/synchronize') == 'all');
+	}
+	
+	public function contactSyncAllowedForStore($storeId) {
+		return (Mage::getStoreConfig('mailplus/general/synchronize', $storeId) == 'all');
 	}
 
 	public function getProductSpecGroup($siteId) {
