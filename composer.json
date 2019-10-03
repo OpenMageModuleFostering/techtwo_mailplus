@@ -1,16 +1,19 @@
 {
-    "name": "OpenMageModuleFostering/Techtwo_Mailplus",
+    "name": "OpenMageModuleFostering\/Techtwo_Mailplus",
     "type": "magento-module",
     "license": "Apache-License,-Version-2.0",
     "homepage": "",
     "description": "MailPlus Connector for Magento",
     "authors": [
-    {
-        "name": "MailPlus",
-        "email": "paul@mailplus.nl"
-    }
-],
+        {
+            "name": "MailPlus",
+            "email": "paul@mailplus.nl"
+        }
+    ],
     "suggest": {
-        "magento-hackathon/magento-composer-installer": "*"
-    }
+        "magento-hackathon\/magento-composer-installer": "*"
+    },
+    "keywords": [
+        "openmage-module"
+    ]
 }
